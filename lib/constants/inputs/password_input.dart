@@ -3,14 +3,17 @@
 import 'package:flutter/material.dart';
 
 import '../color/colores.dart';
+import '../responsive/responsive.dart';
 import '../styles/style_principal.dart';
 
 Widget passwordInput(String title, hint, TextEditingController controller,
-    bool isObsc, VoidCallback fun, StateSetter setter) {
+    bool isObsc, VoidCallback fun, StateSetter setter, BuildContext context) {
   return Column(
     children: [
       Container(
-        margin: const EdgeInsets.only(left: 150, right: 150),
+        margin: Responsive.isMobile(context)
+            ? const EdgeInsets.only(left: 10, right: 10)
+            : const EdgeInsets.only(left: 150, right: 150),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: colorwhite,

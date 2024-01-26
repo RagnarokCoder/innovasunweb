@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:innovasun/constants/responsive/responsive.dart';
 
 import '../color/colores.dart';
 import '../styles/style_principal.dart';
 
-Widget textInput(
-    String title, hint, TextEditingController controller, StateSetter setter) {
+Widget textInput(String title, hint, TextEditingController controller,
+    StateSetter setter, BuildContext context) {
   return Container(
-    margin: const EdgeInsets.only(left: 150, right: 150),
+    margin: Responsive.isMobile(context)
+        ? const EdgeInsets.only(left: 10, right: 10)
+        : const EdgeInsets.only(left: 150, right: 150),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8),
       color: colorwhite,

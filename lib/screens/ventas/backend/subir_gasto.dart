@@ -29,7 +29,8 @@ subirGastoCaja(
       "cantidad": double.parse(cantidad.text),
       "concepto": concepto.text,
       "fecha": DateTime.now(),
-      "usuario": usuario
+      "usuario": usuario,
+      "isSum": isSum
     };
 
     FirebaseFirestore.instance

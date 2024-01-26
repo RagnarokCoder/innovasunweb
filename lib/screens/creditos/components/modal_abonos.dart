@@ -88,7 +88,7 @@ class _ModalAbonosState extends State<ModalAbonos> {
       elevation: 2,
       child: Container(
         height: size.height * 0.1,
-        width: size.width * 0.5,
+        width: Responsive.isMobile(context) ? size.width : size.width * 0.5,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15), color: Colors.white),
         child: Row(

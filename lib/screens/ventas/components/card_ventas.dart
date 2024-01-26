@@ -1,11 +1,13 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:innovasun/constants/alerts/warning.dart';
 import 'package:innovasun/constants/color/colores.dart';
+import 'package:innovasun/constants/responsive/responsive.dart';
 import 'package:innovasun/constants/styles/style_principal.dart';
 import 'package:innovasun/constants/vars/vars.dart';
+import 'package:innovasun/screens/compras/compras.dart';
 import 'package:innovasun/screens/ventas/ventas.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -14,12 +16,14 @@ class CardVentas extends StatefulWidget {
   final String usuario;
   final DocumentSnapshot doc;
   final Size size;
+  final bool tipo;
   const CardVentas(
       {Key? key,
       required this.setter,
       required this.usuario,
       required this.doc,
-      required this.size})
+      required this.size,
+      required this.tipo})
       : super(key: key);
 
   @override
@@ -28,10 +32,12 @@ class CardVentas extends StatefulWidget {
 
 class _CardVentasState extends State<CardVentas> {
   Map<dynamic, dynamic> getVenta = {};
+
   @override
   Widget build(BuildContext context) {
     getVenta = widget.doc.data() as Map;
     Size size = MediaQuery.of(context).size;
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.all(12),
@@ -40,14 +46,16 @@ class _CardVentasState extends State<CardVentas> {
         children: [
           Container(
             height: size.height * 0.3,
-            width: size.width * 0.2,
+            width: Responsive.isMobile(context) ? size.width : size.width * 0.2,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15), color: Colors.white),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: size.height * 0.2,
+                  height: Responsive.isMobile(context)
+                      ? size.height * 0.22
+                      : size.height * 0.2,
                   width: size.width,
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -73,7 +81,9 @@ class _CardVentasState extends State<CardVentas> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Text(
-                      "\$${f.format(getVenta['venta'])} (MXN)",
+                      widget.tipo == false
+                          ? "\$${f.format(getVenta['venta'])} (MXN)"
+                          : "\$${f.format(getVenta['compra'])} (MXN)",
                       style: stylePrincipalBold(14, colorBlack),
                     ),
                     Text(
@@ -86,8 +96,8 @@ class _CardVentasState extends State<CardVentas> {
             ),
           ),
           Positioned(
-              top: -15,
-              right: -15,
+              top: Responsive.isMobile(context) ? 0 : -15,
+              right: Responsive.isMobile(context) ? 0 : -15,
               child: InkWell(
                 onTap: () {
                   widget.setter(() {
@@ -101,13 +111,25 @@ class _CardVentasState extends State<CardVentas> {
                           "El producto ya esta en el carrito",
                           "Este producto ya esta agregado al carrito");
                     } else {
-                      carrito.putIfAbsent(
-                          getVenta['uuid'],
-                          () => {
-                                "nombre": getVenta['nombre'],
-                                "cantidad": 1,
-                                "precio": getVenta['venta']
-                              });
+                      if (widget.tipo == false) {
+                        carrito.putIfAbsent(
+                            getVenta['uuid'],
+                            () => {
+                                  "nombre": getVenta['nombre'],
+                                  "cantidad": 1,
+                                  "id": widget.doc.id,
+                                  "precio": getVenta['venta']
+                                });
+                      } else {
+                        carritoCompras.putIfAbsent(
+                            getVenta['uuid'],
+                            () => {
+                                  "nombre": getVenta['nombre'],
+                                  "cantidad": 1,
+                                  "id": widget.doc.id,
+                                  "precio": getVenta['compra']
+                                });
+                      }
                     }
                   });
                 },
@@ -115,8 +137,8 @@ class _CardVentasState extends State<CardVentas> {
                   decoration: BoxDecoration(
                       color: colorOrange,
                       borderRadius: BorderRadius.circular(500)),
-                  height: 35,
-                  width: 35,
+                  height: Responsive.isMobile(context) ? 50 : 35,
+                  width: Responsive.isMobile(context) ? 50 : 35,
                   child: const Center(
                     child: Icon(
                       LineIcons.shoppingCart,

@@ -3,6 +3,7 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:innovasun/constants/responsive/responsive.dart';
 import 'package:innovasun/screens/correos/backend/get_correo.dart';
 import 'package:innovasun/screens/correos/correos.dart';
 import 'package:innovasun/screens/creditos/backend/get_creditos.dart';
@@ -12,6 +13,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../constants/buttons/generic_button.dart';
 import '../../constants/color/colores.dart';
 import '../../widgets/buscador.dart';
+import '../home/components/bottom_menu.dart';
 
 class CreditosV extends StatefulWidget {
   final String usuario;
@@ -44,112 +46,124 @@ class _CreditosVState extends State<CreditosV> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        height: size.height,
-        width: size.width,
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      isFilter = !isFilter;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Text(
-                        "Filtros",
-                        style: TextStyle(
-                          color: colorGrey,
-                          fontSize: 11,
-                          decoration: TextDecoration.underline,
+        body: Container(
+          height: size.height,
+          width: size.width,
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        isFilter = !isFilter;
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          "Filtros",
+                          style: TextStyle(
+                            color: colorGrey,
+                            fontSize: 11,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Icon(
-                        LineIcons.expand,
-                        color: colorGrey,
-                        size: 15,
-                      )
-                    ],
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Icon(
+                          LineIcons.expand,
+                          color: colorGrey,
+                          size: 15,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                AnimatedSizeAndFade(
-                    child: isFilter == false
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  width: size.width * 0.3,
-                                  height: size.height * .07,
-                                  child: BuscadorText(
-                                    lista: correos,
-                                    function: (String selectedValue) {
-                                      setState(() {
-                                        if (selectedValue == "") {
-                                          creditoselect = "";
-                                        } else {
-                                          creditoselect = selectedValue;
-                                        }
-                                      });
-                                    },
-                                    titulo: "credito",
-                                  )),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                            ],
-                          )
-                        : SizedBox(
-                            width: size.width * 0.5,
-                            height: size.height * .1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  AnimatedSizeAndFade(
+                      child: isFilter == false
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                normalButton(
-                                    isAntiguo == false
-                                        ? "Más Antiguo"
-                                        : "Más Reciente",
-                                    colorOrangLiU,
-                                    colorOrangLiU,
-                                    size, () {
-                                  setState(() {
-                                    isAntiguo = !isAntiguo;
-                                  });
-                                },
-                                    setState,
-                                    context,
-                                    isAntiguo == false
-                                        ? LineIcons.arrowUp
-                                        : LineIcons.arrowDown),
-                                normalButton("Limpiar filtros", colorOrangLiU,
-                                    colorOrangLiU, size, () {
-                                  setState(() {
-                                    isVencido = false;
-                                    isAntiguo = false;
-                                    creditoselect = "";
-                                  });
-                                }, setState, context, LineIcons.broom),
+                                SizedBox(
+                                    width: Responsive.isMobile(context)
+                                        ? size.width * .5
+                                        : size.width * 0.3,
+                                    height: size.height * .07,
+                                    child: BuscadorText(
+                                      lista: correos,
+                                      function: (String selectedValue) {
+                                        setState(() {
+                                          if (selectedValue == "") {
+                                            creditoselect = "";
+                                          } else {
+                                            creditoselect = selectedValue;
+                                          }
+                                        });
+                                      },
+                                      titulo: "credito",
+                                    )),
+                                const SizedBox(
+                                  width: 15,
+                                ),
                               ],
-                            ),
-                          )),
-                const SizedBox()
-              ],
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            getVentasCredito(size)
-          ],
+                            )
+                          : SizedBox(
+                              width: Responsive.isMobile(context)
+                                  ? size.width * 0.8
+                                  : size.width * 0.5,
+                              height: size.height * .1,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  normalButton(
+                                      isAntiguo == false
+                                          ? "Más Antiguo"
+                                          : "Más Reciente",
+                                      colorOrangLiU,
+                                      colorOrangLiU,
+                                      size, () {
+                                    setState(() {
+                                      isAntiguo = !isAntiguo;
+                                    });
+                                  },
+                                      setState,
+                                      context,
+                                      isAntiguo == false
+                                          ? LineIcons.arrowUp
+                                          : LineIcons.arrowDown),
+                                  normalButton("Limpiar filtros", colorOrangLiU,
+                                      colorOrangLiU, size, () {
+                                    setState(() {
+                                      isVencido = false;
+                                      isAntiguo = false;
+                                      creditoselect = "";
+                                    });
+                                  }, setState, context, LineIcons.broom),
+                                ],
+                              ),
+                            )),
+                  const SizedBox()
+                ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              getVentasCredito(size)
+            ],
+          ),
         ),
-      ),
-    );
+        bottomNavigationBar:
+            Responsive.isMobile(context) || Responsive.isTablet(context)
+                ? BottomMenu(
+                    setter: setState,
+                    usuario: widget.usuario,
+                    index: 5,
+                  )
+                : const SizedBox());
   }
 
   Widget getVentasCredito(Size size) {

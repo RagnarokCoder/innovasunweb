@@ -1,5 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api
-
+// ignore_for_file: library_private_types_in_public_api, unused_local_variable
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:innovasun/constants/alerts/error.dart';
@@ -16,6 +17,8 @@ import 'package:line_icons/line_icons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pinput/pinput.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../constants/responsive/responsive.dart';
 
 class Carrito extends StatefulWidget {
   final Size size;
@@ -38,14 +41,22 @@ bool isContado = true;
 bool isPin = false;
 bool isPinCorrect = false;
 bool isIva = false;
+bool isCotizacion = false;
+bool isEdit = false;
+bool isPago = false;
 
 TextEditingController monto = TextEditingController();
+TextEditingController subtotalController = TextEditingController();
 TextEditingController percent = TextEditingController();
+TextEditingController cliente = TextEditingController();
 
 String pinL = "0522";
 
 dynamic subtotal = 0;
+dynamic auxsub = 0;
 dynamic descuento = 0;
+
+Map<dynamic, dynamic> carritomail = {};
 
 var uuid = const Uuid();
 
@@ -66,7 +77,9 @@ class _CarritoState extends State<Carrito> {
     for (var i in carrito.keys) {
       subtotal += carrito[i]['precio'] * carrito[i]['cantidad'];
     }
-
+    if (auxsub != 0) {
+      subtotal += auxsub;
+    }
     subtotal -= descuento;
     return Container(
       height: widget.size.height,
@@ -76,9 +89,34 @@ class _CarritoState extends State<Carrito> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            "Carrito",
-            style: styleSecondary(13, colorGrey),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Carrito",
+                style: styleSecondary(13, colorGrey),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Cotización",
+                    style: styleSecondary(11, colorBlack),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Switch(
+                    value: isCotizacion,
+                    onChanged: (value) {
+                      setState(() {
+                        isCotizacion = value;
+                      });
+                    },
+                  ),
+                ],
+              )
+            ],
           ),
           Divider(
             indent: 40,
@@ -90,11 +128,12 @@ class _CarritoState extends State<Carrito> {
             height: 20,
           ),
           Container(
-            height: widget.size.height * 0.7,
+            height: widget.size.height * 0.63,
             width: widget.size.width,
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: ListView(
               children: [
+                genericInput("Nombre", "Cliente", cliente, setState),
                 carrito.isEmpty
                     ? Center(
                         child: Text(
@@ -111,20 +150,74 @@ class _CarritoState extends State<Carrito> {
               ],
             ),
           ),
-          Switch(
-            value: isIva,
-            onChanged: (value) {
-              setState(() {
-                isIva = value;
-              });
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SizedBox(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "Sin IVA/Con IVA",
+                    style: styleSecondary(11, colorBlack),
+                  ),
+                  Switch(
+                    value: isIva,
+                    activeColor: colorOrangLiU,
+                    onChanged: (value) {
+                      setState(() {
+                        isIva = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "Efectivo/Transferencia",
+                    style: styleSecondary(11, colorBlack),
+                  ),
+                  Switch(
+                    value: isPago,
+                    activeColor: colorOrangLiU,
+                    onChanged: (value) {
+                      setState(() {
+                        isPago = value;
+                      });
+                    },
+                  ),
+                ],
+              )
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
-                "Subtotal: \$${f.format(subtotal)}",
-                style: styleSecondary(12, colorGrey),
+              InkWell(
+                onTap: widget.usuario == "lilian_admin@innovasun.com" ||
+                        widget.usuario == "jeanelle_admin@innovasun.com"
+                    ? () {
+                        setState(() {
+                          isEdit = !isEdit;
+                        });
+                      }
+                    : null,
+                child: isEdit == true
+                    ? SizedBox(
+                        height: widget.size.height * 0.05,
+                        width: Responsive.isDesktop(context)
+                            ? widget.size.width * 0.1
+                            : widget.size.width * .3,
+                        child: genericInputN(
+                            "Cantidad", "Precio", price, setState))
+                    : Text(
+                        "Subtotal: \$${f.format(subtotal)}",
+                        style: styleSecondary(12, colorGrey),
+                      ),
               ),
               Text(
                 isIva == false
@@ -167,6 +260,23 @@ class _CarritoState extends State<Carrito> {
                               if (isContado == true) {
                                 subirVenta(widget.size, context, widget.setter,
                                     widget.usuario);
+                                for (var i in carrito.keys) {
+                                  carritomail.putIfAbsent(
+                                      carrito[i]['nombre'],
+                                      () => {
+                                            "precio":
+                                                "\$${f.format(carrito[i]['precio'])}",
+                                            "cantidad":
+                                                f.format(carrito[i]['cantidad'])
+                                          });
+                                }
+                                sendEmail(
+                                        nombre: "",
+                                        documento: "",
+                                        email: "",
+                                        mensaje:
+                                            "Cualquier duda ó comentario puede contactarnos en innovasun.dev@gmail.com")
+                                    .then((value) => {});
                               } else {
                                 modalCredito(widget.size, context,
                                     widget.usuario, widget.setter);
@@ -275,5 +385,78 @@ class _CarritoState extends State<Carrito> {
         ],
       ),
     );
+  }
+
+  Widget genericInputN(String title, hint, TextEditingController controller,
+      StateSetter setter) {
+    return Container(
+      margin: const EdgeInsets.only(left: 5, right: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: colorwhite,
+      ),
+      child: TextField(
+        controller: controller,
+        onSubmitted: (value) {
+          setState(() {
+            auxsub = double.parse(controller.text) - subtotal;
+            isEdit = false;
+            controller.clear();
+          });
+          widget.setter(() {});
+        },
+        style: styleSecondary(12, colorBlack),
+        keyboardType: title == "Correo"
+            ? TextInputType.emailAddress
+            : title == "Teléfono"
+                ? TextInputType.phone
+                : title == "Nombre"
+                    ? TextInputType.name
+                    : TextInputType.number,
+        cursorColor: colorBlack,
+        decoration: InputDecoration(
+          fillColor: colorLightGray,
+          hintText: hint,
+          labelText: hint,
+          hintStyle: styleSecondary(12, colorBlack),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  width: controller.text.isNotEmpty ? 2 : 1,
+                  color: controller.text.isNotEmpty ? colorGrey : colorwhite),
+              borderRadius: BorderRadius.circular(15)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2, color: colorBlack),
+              borderRadius: BorderRadius.circular(15)),
+        ),
+      ),
+    );
+  }
+
+  Future sendEmail({
+    required String nombre,
+    required String documento,
+    required String email,
+    required String mensaje,
+  }) async {
+    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+    const serviceId = 'service_mn5riqm';
+    const templateId = 'template_la7vvtv';
+    const userId = 'oiApsAfNbghiTHpiz';
+
+    final response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userId,
+          'template_params': {
+            'mov': "Movimiento Venta en mostrador (contado) ${widget.usuario}",
+            'money': "\$${f.format(total)}",
+            'description': carritomail.toString(),
+            'message': mensaje,
+          }
+        }));
   }
 }

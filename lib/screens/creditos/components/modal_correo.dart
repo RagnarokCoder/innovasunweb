@@ -56,11 +56,15 @@ class _ModalCreditoState extends State<ModalCredito> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * .4
+                    : size.width * 0.2,
                 child: genericInput("Concepto", "Concepto", nombre, setState),
               ),
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * .4
+                    : size.width * 0.2,
                 child: genericInput("Nombre", "Cantidad", abono, setState),
               )
             ],
@@ -72,7 +76,9 @@ class _ModalCreditoState extends State<ModalCredito> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: size.width * 0.2,
+                    width: Responsive.isMobile(context)
+                        ? size.width * .4
+                        : size.width * 0.2,
                     child: genericInput(
                         "Nombre", "Responsable", responsable, setState),
                   ),
@@ -88,7 +94,9 @@ class _ModalCreditoState extends State<ModalCredito> {
               ),
               Container(
                   height: size.height * 0.3,
-                  width: size.width * .2,
+                  width: Responsive.isMobile(context)
+                      ? size.width * .4
+                      : size.width * .2,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white),

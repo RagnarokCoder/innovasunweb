@@ -6,6 +6,7 @@ import 'package:innovasun/constants/color/colores.dart';
 import 'package:innovasun/constants/styles/style_principal.dart';
 import 'package:innovasun/constants/vars/vars.dart';
 import 'package:line_icons/line_icons.dart';
+import '../../../constants/responsive/responsive.dart';
 import '../backend/modal.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -15,8 +16,13 @@ class CardInventario extends StatefulWidget {
   final String usuario;
   final DocumentSnapshot doc;
   final Size size;
+  final String select;
   const CardInventario(
-      {Key? key, required this.usuario, required this.doc, required this.size})
+      {Key? key,
+      required this.usuario,
+      required this.doc,
+      required this.size,
+      required this.select})
       : super(key: key);
 
   @override
@@ -30,9 +36,12 @@ class _CardInventarioState extends State<CardInventario> {
     getInventario = widget.doc.data() as Map;
     Size size = MediaQuery.of(context).size;
     return InkWell(
-      onTap: () {
-        modalInventario(size, context, true, widget.usuario, widget.doc.id);
-      },
+      onTap: widget.select == "bodega"
+          ? null
+          : () {
+              modalInventario(
+                  size, context, true, widget.usuario, widget.doc.id);
+            },
       child: Card(
         elevation: 2,
         margin: const EdgeInsets.all(12),
@@ -41,14 +50,18 @@ class _CardInventarioState extends State<CardInventario> {
           children: [
             Container(
               height: size.height * 0.3,
-              width: size.width * 0.2,
+              width:
+                  Responsive.isMobile(context) ? size.width : size.width * 0.2,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15), color: Colors.white),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Container(
-                    height: size.height * 0.2,
+                    height: Responsive.isMobile(context)
+                        ? size.width * .22
+                        : size.height * 0.2,
                     width: size.width,
                     decoration: BoxDecoration(
                         image: DecorationImage(
@@ -73,18 +86,20 @@ class _CardInventarioState extends State<CardInventario> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Column(
-                        children: [
-                          Text(
-                            "Compra: \$${f.format(getInventario['compra'])} (MXN)",
-                            style: styleSecondary(12, colorGrey),
-                          ),
-                          Text(
-                            "Venta: \$${f.format(getInventario['venta'])} (MXN)",
-                            style: styleSecondary(12, colorGrey),
-                          ),
-                        ],
-                      ),
+                      widget.select == "bodega"
+                          ? const SizedBox()
+                          : Column(
+                              children: [
+                                Text(
+                                  "Compra: \$${f.format(getInventario['compra'])} (MXN)",
+                                  style: styleSecondary(12, colorGrey),
+                                ),
+                                Text(
+                                  "Venta: \$${f.format(getInventario['venta'])} (MXN)",
+                                  style: styleSecondary(12, colorGrey),
+                                ),
+                              ],
+                            ),
                       Text(
                         "C. ${f.format(getInventario['cantidad'])}",
                         style: stylePrincipalBold(14, colorBlack),
@@ -95,8 +110,8 @@ class _CardInventarioState extends State<CardInventario> {
               ),
             ),
             Positioned(
-                top: -15,
-                right: -15,
+                top: Responsive.isMobile(context) ? 0 : -15,
+                right: Responsive.isMobile(context) ? 0 : -15,
                 child: InkWell(
                   onTap: () {
                     createPDF(getInventario['uuid']);
@@ -105,8 +120,8 @@ class _CardInventarioState extends State<CardInventario> {
                     decoration: BoxDecoration(
                         color: colorOrange,
                         borderRadius: BorderRadius.circular(500)),
-                    height: 45,
-                    width: 45,
+                    height: Responsive.isMobile(context) ? 50 : 45,
+                    width: Responsive.isMobile(context) ? 50 : 45,
                     child: const Center(
                       child: Icon(
                         LineIcons.qrcode,

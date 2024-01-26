@@ -5,13 +5,25 @@ import 'package:innovasun/constants/buttons/generic_button.dart';
 import 'package:innovasun/constants/color/colores.dart';
 import 'package:innovasun/constants/inputs/text_input.dart';
 import 'package:innovasun/constants/styles/style_principal.dart';
+import 'package:innovasun/screens/compras/backend/subir_compra.dart';
+import 'package:innovasun/screens/inventario/inventario.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../constants/responsive/responsive.dart';
+import '../../../widgets/buscador.dart';
+import '../../correos/correos.dart';
 
 class ModalCompras extends StatefulWidget {
   final bool isEdit;
-  const ModalCompras({Key? key, required this.isEdit}) : super(key: key);
+  final String usuario;
+  final String doc;
+  const ModalCompras(
+      {Key? key,
+      required this.isEdit,
+      required this.usuario,
+      required this.doc})
+      : super(key: key);
 
   @override
   _ModalComprasState createState() => _ModalComprasState();
@@ -19,8 +31,10 @@ class ModalCompras extends StatefulWidget {
 
 TextEditingController nombre = TextEditingController();
 TextEditingController descripcion = TextEditingController();
-TextEditingController materiales = TextEditingController();
 TextEditingController correo = TextEditingController();
+
+bool isCompraLoading = false;
+String inventarioSelect = "";
 
 class _ModalComprasState extends State<ModalCompras> {
   @override
@@ -60,21 +74,70 @@ class _ModalComprasState extends State<ModalCompras> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
-                width: size.width * 0.2,
-                child:
-                    genericInput("Nombre", "Materiales", materiales, setState),
-              ),
+                  width: size.width * 0.2,
+                  height: size.height * .07,
+                  child: BuscadorText(
+                    lista: inventario,
+                    function: (String selectedValue) {
+                      setState(() {
+                        if (selectedValue == "") {
+                          inventarioSelect = "";
+                        } else {
+                          inventarioSelect = selectedValue;
+                        }
+                      });
+                    },
+                    titulo: "producto",
+                  )),
               SizedBox(
-                width: size.width * 0.2,
-                child: genericInput("Nombre", "Correo", correo, setState),
-              )
+                  width: size.width * 0.2,
+                  height: size.height * .07,
+                  child: BuscadorText(
+                    lista: correos,
+                    function: (String selectedValue) {
+                      setState(() {
+                        if (selectedValue == "") {
+                          correoSelect = "";
+                        } else {
+                          correoSelect = selectedValue;
+                        }
+                      });
+                    },
+                    titulo: "correo",
+                  )),
             ],
           ),
           const SizedBox(
             height: 30,
           ),
-          normalButton("Subir Compra", colorOrangLiU, colorOrangLiU, size,
-              () {}, setState, context, LineIcons.plusCircle)
+          isCompraLoading == true
+              ? Center(
+                  child: LoadingAnimationWidget.discreteCircle(
+                      color: colorOrangLiU, size: 20))
+              : widget.isEdit == true
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        normalButton(
+                            "Editar Compra", colorOrangLiU, colorOrangLiU, size,
+                            () {
+                          subirCompra(size, context, setState, widget.usuario,
+                              widget.doc);
+                        }, setState, context, LineIcons.edit),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        normalButton("Eliminar Correo", colorOrangLiU,
+                            colorOrangLiU, size, () {
+                          /*eliminarCorreo(size, context, setState, widget.doc,
+                              widget.usuario);*/
+                        }, setState, context, LineIcons.trash)
+                      ],
+                    )
+                  : normalButton(
+                      "Subir Compra", colorOrangLiU, colorOrangLiU, size, () {
+                      subirCompra(size, context, setState, widget.usuario, "");
+                    }, setState, context, LineIcons.plusCircle)
         ],
       ),
     );

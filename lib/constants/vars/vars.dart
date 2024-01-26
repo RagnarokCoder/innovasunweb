@@ -4,5 +4,5 @@ import 'package:intl/intl.dart';
 
 NumberFormat f = NumberFormat("#,##0.00", "es_US");
 
-const String version = "v 0.0.1";
+const String version = "v 2.1.2+0";
 String globalUsuario = "";

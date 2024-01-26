@@ -38,16 +38,22 @@ dependencies:
   pinput:
   syncfusion_flutter_calendar: 20.4.52
   syncfusion_flutter_datepicker:
+  syncfusion_flutter_charts: 
   elegant_notification:
   loading_animation_widget:
   file_picker:
   uuid:
-  image_picker: ^0.8.6 
+  image_picker: 0.8.6 
   firebase_auth: ^4.4.0
   cloud_firestore:
   firebase_storage:
   pdf: 3.10.1
   universal_html: 
+  calendar_date_picker2:
+  qr_code_scanner:
+  syncfusion_flutter_pdf:
+  http: 
+  salomon_bottom_bar:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2

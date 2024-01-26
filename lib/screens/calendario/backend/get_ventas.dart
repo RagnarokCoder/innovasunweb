@@ -27,9 +27,9 @@ getCompras(StateSetter setter) {
 }
 
 getInstalaciones(StateSetter setter) {
-  final fondosD = FirebaseFirestore.instance.collection("instalaciones");
+  final instalacion = FirebaseFirestore.instance.collection("instalaciones");
 
-  fondosD
+  instalacion
       .get()
       .then((value) => {
             for (var doc in value.docs)
@@ -46,6 +46,17 @@ getGastos(StateSetter setter) {
       .then((value) => {
             for (var doc in value.docs)
               {gastos.putIfAbsent(doc.id, () => doc.data())}
+          })
+      .then((value) => {setter(() {})});
+}
+
+getUsuarios(StateSetter setter) {
+  final fondosD = FirebaseFirestore.instance.collection("usuarios");
+  usuarios.clear();
+  fondosD
+      .get()
+      .then((value) => {
+            for (var doc in value.docs) {usuarios.add(doc.id)}
           })
       .then((value) => {setter(() {})});
 }

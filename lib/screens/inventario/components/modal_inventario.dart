@@ -37,7 +37,6 @@ TextEditingController compra = TextEditingController();
 TextEditingController stock = TextEditingController();
 
 String downloadUrl = "";
-
 dynamic getImg;
 
 bool isLoadingInventario = false;
@@ -85,11 +84,15 @@ class _ModalInventarioState extends State<ModalInventario> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * 0.4
+                    : size.width * 0.2,
                 child: genericInput("Nombre", "Nombre", nombre, setState),
               ),
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * 0.4
+                    : size.width * 0.2,
                 child: genericInput(
                     "Nombre", "Descripción", descripcion, setState),
               )
@@ -99,12 +102,16 @@ class _ModalInventarioState extends State<ModalInventario> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * 0.4
+                    : size.width * 0.2,
                 child:
                     genericInput("Nombre", "Precio Compra", compra, setState),
               ),
               SizedBox(
-                width: size.width * 0.2,
+                width: Responsive.isMobile(context)
+                    ? size.width * 0.4
+                    : size.width * 0.2,
                 child: genericInput("Nombre", "Precio Venta", venta, setState),
               )
             ],
@@ -116,7 +123,9 @@ class _ModalInventarioState extends State<ModalInventario> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
-                    width: size.width * 0.2,
+                    width: Responsive.isMobile(context)
+                        ? size.width * 0.4
+                        : size.width * 0.2,
                     child: genericInput("Nombre", "Stock", stock, setState),
                   ),
                   const SizedBox(
@@ -127,24 +136,45 @@ class _ModalInventarioState extends State<ModalInventario> {
                           child: LoadingAnimationWidget.discreteCircle(
                               color: colorOrangLiU, size: 20))
                       : widget.isEdit == true
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                normalButton("Editar Producto", colorOrangLiU,
-                                    colorOrangLiU, size, () {
-                                  subirProducto(size, context, setState,
-                                      widget.usuario, widget.doc);
-                                }, setState, context, LineIcons.edit),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                normalButton("Eliminar Producto", colorOrangLiU,
-                                    colorOrangLiU, size, () {
-                                  eliminarProducto(size, context, setState,
-                                      widget.doc, widget.usuario);
-                                }, setState, context, LineIcons.trash)
-                              ],
-                            )
+                          ? Responsive.isDesktop(context)
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    normalButton("Editar Producto",
+                                        colorOrangLiU, colorOrangLiU, size, () {
+                                      subirProducto(size, context, setState,
+                                          widget.usuario, widget.doc);
+                                    }, setState, context, LineIcons.edit),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    normalButton("Eliminar Producto",
+                                        colorOrangLiU, colorOrangLiU, size, () {
+                                      eliminarProducto(size, context, setState,
+                                          widget.doc, widget.usuario);
+                                    }, setState, context, LineIcons.trash)
+                                  ],
+                                )
+                              : Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    normalButton("Editar Producto",
+                                        colorOrangLiU, colorOrangLiU, size, () {
+                                      subirProducto(size, context, setState,
+                                          widget.usuario, widget.doc);
+                                    }, setState, context, LineIcons.edit),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    normalButton("Eliminar Producto",
+                                        colorOrangLiU, colorOrangLiU, size, () {
+                                      eliminarProducto(size, context, setState,
+                                          widget.doc, widget.usuario);
+                                    }, setState, context, LineIcons.trash)
+                                  ],
+                                )
                           : normalButton("Subir Producto", colorOrangLiU,
                               colorOrangLiU, size, () {
                               subirProducto(
@@ -160,7 +190,9 @@ class _ModalInventarioState extends State<ModalInventario> {
                   elevation: 2,
                   child: Container(
                     height: size.height * 0.2,
-                    width: size.width * .2,
+                    width: Responsive.isMobile(context)
+                        ? size.width * 0.4
+                        : size.width * .2,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.white),

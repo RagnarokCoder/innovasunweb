@@ -67,7 +67,7 @@ Widget normalButton(String title, Color color, color2, Size size,
     child: Container(
         height: size.height * 0.04,
         width:
-            Responsive.isDesktop(context) ? size.width * 0.1 : size.width * 0.2,
+            Responsive.isDesktop(context) ? size.width * 0.1 : size.width * 0.3,
         decoration: BoxDecoration(
             color: isHover == false ? color : color2,
             borderRadius: BorderRadius.circular(5)),
@@ -82,10 +82,16 @@ Widget normalButton(String title, Color color, color2, Size size,
             const SizedBox(
               width: 10,
             ),
-            Text(
-              title,
-              style: styleSecondary(11, colorwhite),
-              textAlign: TextAlign.center,
+            SizedBox(
+              width: Responsive.isDesktop(context)
+                  ? size.width * 0.07
+                  : size.width * 0.2,
+              child: Text(
+                title,
+                style: styleSecondary(11, colorwhite),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         )),

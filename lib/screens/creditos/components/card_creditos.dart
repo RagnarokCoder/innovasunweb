@@ -6,8 +6,12 @@ import 'package:innovasun/constants/color/colores.dart';
 import 'package:innovasun/constants/styles/style_principal.dart';
 import 'package:innovasun/constants/vars/vars.dart';
 import 'package:innovasun/screens/creditos/backend/modal_corr.dart';
+import 'package:innovasun/screens/creditos/pdf/estado_cuenta.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../../constants/responsive/responsive.dart';
 
 class CardCredito extends StatefulWidget {
   final String usuario;
@@ -20,6 +24,8 @@ class CardCredito extends StatefulWidget {
   @override
   _CardCreditoState createState() => _CardCreditoState();
 }
+
+bool isLoadingEstado = false;
 
 class _CardCreditoState extends State<CardCredito> {
   Map<dynamic, dynamic> credito = {};
@@ -89,15 +95,17 @@ class _CardCreditoState extends State<CardCredito> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    height: size.height * 0.03,
-                    width: size.width * 0.05,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(
-                      "lib/assets/logo.png",
-                    ))),
-                  ),
+                  Responsive.isMobile(context)
+                      ? const SizedBox()
+                      : Container(
+                          height: size.height * 0.03,
+                          width: size.width * 0.05,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                            "lib/assets/logo.png",
+                          ))),
+                        ),
                   Row(
                     children: [
                       Text(
@@ -140,13 +148,21 @@ class _CardCreditoState extends State<CardCredito> {
                             color: Colors.green,
                             size: 20,
                           )),
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            LineIcons.print,
-                            color: Colors.blue.shade800,
-                            size: 20,
-                          )),
+                      isLoadingEstado == true
+                          ? LoadingAnimationWidget.discreteCircle(
+                              color: colorOrangLiU, size: 20)
+                          : IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isLoadingEstado = true;
+                                });
+                                generateEstado(credito, setState);
+                              },
+                              icon: Icon(
+                                LineIcons.print,
+                                color: Colors.blue.shade800,
+                                size: 20,
+                              )),
                     ],
                   )
                 ],

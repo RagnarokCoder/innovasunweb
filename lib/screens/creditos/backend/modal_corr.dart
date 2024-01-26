@@ -13,7 +13,7 @@ modalCredito(
       builder: (BuildContext bc) {
         return Container(
           width: size.width,
-          height: Responsive.isDesktop(context) ? size.height * 0.8 : 150,
+          height: size.height * 0.8,
           color: Colors.transparent,
           child: Padding(
               padding: Responsive.isDesktop(context)
@@ -36,7 +36,7 @@ modalAbonos(Size size, BuildContext context, bool isEdit, DocumentSnapshot doc,
       builder: (BuildContext bc) {
         return Container(
           width: size.width,
-          height: Responsive.isDesktop(context) ? size.height * 0.8 : 150,
+          height: size.height * 0.8,
           color: Colors.transparent,
           child: Padding(
               padding: Responsive.isDesktop(context)

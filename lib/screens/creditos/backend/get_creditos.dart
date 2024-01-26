@@ -11,7 +11,7 @@ getCreditos(StateSetter setter) {
       .snapshots()
       .listen((result) {
     creditosGet.clear();
-
+    vencidos = 0;
     result.docs.forEach((result) {
       creditosGet.putIfAbsent(result.id, () => result.data());
       for (var i in creditosGet.keys) {

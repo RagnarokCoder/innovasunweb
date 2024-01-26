@@ -23,8 +23,8 @@ getAllCorreos() {
   FirebaseFirestore.instance.collection("correos").snapshots().listen((result) {
     correos.clear();
     result.docs.forEach((result) {
-      if (!correos.contains(result.data()['nombre'])) {
-        correos.add((result.data()['nombre']));
+      if (!correos.contains(result.data()['correo'])) {
+        correos.add((result.data()['correo']));
       }
     });
   });

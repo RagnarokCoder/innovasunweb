@@ -33,7 +33,7 @@ class _BuscadorTextState extends State<BuscadorText> {
           ? size.height * 0.06
           : size.height * 0.07,
       width:
-          Responsive.isDesktop(context) ? size.width * 0.18 : size.width * 0.5,
+          Responsive.isDesktop(context) ? size.width * 0.18 : size.width * 0.4,
       child: Autocomplete<String>(
           fieldViewBuilder:
               (context, textEditingController, focusNode, onFieldSubmitted) {

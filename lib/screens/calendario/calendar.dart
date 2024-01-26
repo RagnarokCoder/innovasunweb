@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:innovasun/constants/color/colores.dart';
 import 'package:innovasun/constants/vars/vars.dart';
 import 'package:innovasun/screens/calendario/backend/get_ventas.dart';
+import 'package:innovasun/screens/calendario/components/date_inst.dart';
+import 'package:innovasun/screens/calendario/components/select_user.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -30,8 +32,13 @@ Map<dynamic, dynamic> ventas = {};
 Map<dynamic, dynamic> compras = {};
 Map<dynamic, dynamic> gastos = {};
 Map<dynamic, dynamic> instalaciones = {};
+Map<dynamic, dynamic> allMoves = {};
 
 String filters = "";
+
+List<String> usuarios = [];
+
+DateTime? rangoA, rangoB;
 
 class _CalendarioState extends State<Calendario> {
   @override
@@ -50,12 +57,13 @@ class _CalendarioState extends State<Calendario> {
   getAll() {
     setState(() {
       clearAllLists();
-
+      getInstalaciones(setState);
       if (filters == "") {
         getVentas(setState);
         getGastos(setState);
         getCompras(setState);
         getInstalaciones(setState);
+        getUsuarios(setState);
       } else {
         Map<String, Function> filterFunctions = {
           'ventas': getVentas,
@@ -188,24 +196,11 @@ class _CalendarioState extends State<Calendario> {
                             },
                           );
                         }, setState, context, LineIcons.calendarPlus),
-                        normalButton(
-                            "Reporte instalador",
-                            colorOrangLiU,
-                            colorOrangLiU,
-                            size,
-                            () {},
-                            setState,
-                            context,
-                            LineIcons.folderOpen),
-                        normalButton(
-                            "Reporte por fecha",
-                            colorOrangLiU,
-                            colorOrangLiU,
-                            size,
-                            () {},
-                            setState,
-                            context,
-                            LineIcons.calendarPlus),
+                        normalButton("Reporte instalador", colorOrangLiU,
+                            colorOrangLiU, size, () {
+                          modalSelect(size, context, "", setState);
+                        }, setState, context, LineIcons.folderOpen),
+                        rangoFechaInstalacion(context, setState, size, "")
                       ],
                     ),
                   )),

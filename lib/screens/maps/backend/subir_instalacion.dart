@@ -113,6 +113,7 @@ subirInstalacion(Size size, BuildContext context, StateSetter setSt,
                     observController.clear();
                     latitud.clear();
                     longitud.clear();
+                    listFiles.clear();
                     isLoadingInst = false;
                   },
                 ),

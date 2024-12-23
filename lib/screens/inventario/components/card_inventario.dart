@@ -58,10 +58,32 @@ class _CardInventarioState extends State<CardInventario> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Icon(
+                        Icons.circle,
+                        color: colorOrangLiU,
+                        size: 12,
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        getInventario['categoria'] == "Bodega"
+                            ? "En Bodega"
+                            : "En Tienda",
+                        style: styleSecondary(11, Colors.black),
+                      )
+                    ],
+                  ),
                   Container(
                     height: Responsive.isMobile(context)
                         ? size.width * .22
-                        : size.height * 0.2,
+                        : size.height * 0.17,
                     width: size.width,
                     decoration: BoxDecoration(
                         image: DecorationImage(

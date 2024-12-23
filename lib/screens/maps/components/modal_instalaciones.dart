@@ -122,6 +122,9 @@ class _ModalInstallState extends State<ModalInstall> {
                     )
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -140,6 +143,9 @@ class _ModalInstallState extends State<ModalInstall> {
                           nombreController, setState),
                     )
                   ],
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -160,6 +166,9 @@ class _ModalInstallState extends State<ModalInstall> {
                     )
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -179,6 +188,9 @@ class _ModalInstallState extends State<ModalInstall> {
                     )
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -197,6 +209,9 @@ class _ModalInstallState extends State<ModalInstall> {
                           observController, setState),
                     )
                   ],
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

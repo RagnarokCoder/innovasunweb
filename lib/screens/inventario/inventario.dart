@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:innovasun/screens/inventario/backend/get_inventario.dart';
 import 'package:innovasun/screens/inventario/components/card_inventario.dart';
+import 'package:innovasun/screens/inventario/pdf/inventario_pdf.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -33,8 +34,12 @@ bool isMayorCantidad = false;
 bool isAgotado = false;
 
 List<String> inventario = [];
+Map<dynamic, dynamic> inventarioAll = {};
 
 TextEditingController buscador = TextEditingController();
+
+int index = 0;
+String categoria = "Bodega";
 
 StreamController<QuerySnapshot> _streamController =
     StreamController<QuerySnapshot>.broadcast();
@@ -43,6 +48,7 @@ class _InventarioState extends State<Inventario> {
   @override
   void initState() {
     getProductsI();
+    buscador.clear();
     super.initState();
   }
 
@@ -91,6 +97,7 @@ class _InventarioState extends State<Inventario> {
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                filters(size),
                                 Container(
                                   width: Responsive.isMobile(context)
                                       ? size.width * 0.5
@@ -149,7 +156,7 @@ class _InventarioState extends State<Inventario> {
                           : SizedBox(
                               width: Responsive.isMobile(context)
                                   ? size.width * 0.8
-                                  : size.width * 0.5,
+                                  : size.width * 0.65,
                               height: Responsive.isMobile(context)
                                   ? size.height * 0.07
                                   : size.height * .1,
@@ -157,6 +164,17 @@ class _InventarioState extends State<Inventario> {
                                   ? ListView(
                                       scrollDirection: Axis.horizontal,
                                       children: [
+                                        normalButton(
+                                            "Reporte Inventario",
+                                            colorOrangLiU,
+                                            colorOrangLiU,
+                                            size, () {
+                                          generateInventoryPdf(setState);
+                                        }, setState, context,
+                                            LineIcons.pdfFile),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
                                         normalButton(
                                             isMayorPrecio == false
                                                 ? "Mayor Precio"
@@ -222,6 +240,17 @@ class _InventarioState extends State<Inventario> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: [
+                                        normalButton(
+                                            "Reporte Inventario",
+                                            colorOrangLiU,
+                                            colorOrangLiU,
+                                            size, () {
+                                          generateInventoryPdf(setState);
+                                        }, setState, context,
+                                            LineIcons.pdfFile),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
                                         normalButton(
                                             isMayorPrecio == false
                                                 ? "Mayor Precio"
@@ -295,6 +324,67 @@ class _InventarioState extends State<Inventario> {
                 : const SizedBox());
   }
 
+  Widget filters(Size size) {
+    return SizedBox(
+      height: size.height * 0.03,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                index = 0;
+                categoria = "Bodega";
+              });
+            },
+            child: Container(
+              width: Responsive.isDesktop(context)
+                  ? size.width * 0.05
+                  : size.width * 0.15,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      topLeft: Radius.circular(50)),
+                  color: index == 0 ? colorOrangLiU : Colors.white),
+              child: Center(
+                child: Text(
+                  "Bodega",
+                  style: styleSecondary(
+                      12, index == 0 ? Colors.white : Colors.black),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                index = 1;
+                categoria = "Tienda";
+              });
+            },
+            child: Container(
+              width: Responsive.isDesktop(context)
+                  ? size.width * 0.05
+                  : size.width * 0.15,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(50),
+                      topRight: Radius.circular(50)),
+                  color: index == 1 ? colorOrangLiU : Colors.white),
+              child: Center(
+                child: Text(
+                  "Tienda",
+                  style: styleSecondary(
+                      12, index == 1 ? Colors.white : Colors.black),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   void filterData(String searchTerm) {
     FirebaseFirestore.instance
         .collection("inventario")
@@ -332,7 +422,7 @@ class _InventarioState extends State<Inventario> {
                               .snapshots()
                           : FirebaseFirestore.instance
                               .collection("inventario")
-                              .limit(25)
+                              .where("categoria", isEqualTo: categoria)
                               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {

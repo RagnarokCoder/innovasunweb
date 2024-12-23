@@ -54,7 +54,8 @@ subirProducto(Size size, BuildContext context, StateSetter setSt,
       "descripcion": descripcion.text,
       "fecha": DateTime.now(),
       "imagen": downloadUrl,
-      "uuid": uuid.v4()
+      "uuid": uuid.v4(),
+      "categoria": categoria
     };
     if (id != "") {
       FirebaseFirestore.instance

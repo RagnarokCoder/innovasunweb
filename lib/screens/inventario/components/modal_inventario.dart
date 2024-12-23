@@ -37,7 +37,10 @@ TextEditingController compra = TextEditingController();
 TextEditingController stock = TextEditingController();
 
 String downloadUrl = "";
+String categoria = "";
 dynamic getImg;
+
+int index = 0;
 
 bool isLoadingInventario = false;
 
@@ -129,6 +132,14 @@ class _ModalInventarioState extends State<ModalInventario> {
                     child: genericInput("Nombre", "Stock", stock, setState),
                   ),
                   const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                      width: Responsive.isMobile(context)
+                          ? size.width * 0.4
+                          : size.width * 0.2,
+                      child: filters(size)),
+                  const SizedBox(
                     height: 30,
                   ),
                   isLoadingInventario == true
@@ -214,6 +225,67 @@ class _ModalInventarioState extends State<ModalInventario> {
               )
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget filters(Size size) {
+    return SizedBox(
+      height: size.height * 0.03,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                index = 0;
+                categoria = "Bodega";
+              });
+            },
+            child: Container(
+              width: Responsive.isDesktop(context)
+                  ? size.width * 0.05
+                  : size.width * 0.15,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      topLeft: Radius.circular(50)),
+                  color: index == 0 ? colorOrangLiU : Colors.white),
+              child: Center(
+                child: Text(
+                  "Bodega",
+                  style: styleSecondary(
+                      12, index == 0 ? Colors.white : Colors.black),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                index = 1;
+                categoria = "Tienda";
+              });
+            },
+            child: Container(
+              width: Responsive.isDesktop(context)
+                  ? size.width * 0.05
+                  : size.width * 0.15,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(50),
+                      topRight: Radius.circular(50)),
+                  color: index == 1 ? colorOrangLiU : Colors.white),
+              child: Center(
+                child: Text(
+                  "Tienda",
+                  style: styleSecondary(
+                      12, index == 1 ? Colors.white : Colors.black),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

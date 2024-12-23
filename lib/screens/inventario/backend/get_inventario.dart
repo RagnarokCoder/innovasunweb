@@ -11,6 +11,8 @@ getProductsI() {
       .listen((result) {
     inventario.clear();
     result.docs.forEach((result) {
+      inventarioAll.putIfAbsent(result.id, () => result.data());
+
       if (!inventario.contains(result.data()['nombre'])) {
         inventario.add((result.data()['nombre']));
       }

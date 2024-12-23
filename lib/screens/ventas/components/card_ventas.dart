@@ -52,6 +52,28 @@ class _CardVentasState extends State<CardVentas> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Icon(
+                      Icons.circle,
+                      color: colorOrangLiU,
+                      size: 12,
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      getVenta['categoria'] == "Bodega"
+                          ? "En Bodega"
+                          : "En Tienda",
+                      style: styleSecondary(11, Colors.black),
+                    )
+                  ],
+                ),
                 Container(
                   height: Responsive.isMobile(context)
                       ? size.height * 0.22
